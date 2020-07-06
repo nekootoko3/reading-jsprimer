@@ -1,11 +1,17 @@
 const main = async () => {
   try {
-    const userInfo = await fetchUserInfo("nekootoko3");
+    const userId = getUserId();
+    const userInfo = await fetchUserInfo(userId);
     const view = createView(userInfo);
     displayView(view);
   } catch (err) {
     console.error(err);
   }
+};
+
+const getUserId = () => {
+  const userId = document.getElementById("userId").value;
+  return encodeURIComponent(userId);
 };
 
 const fetchUserInfo = async (userId) => {
