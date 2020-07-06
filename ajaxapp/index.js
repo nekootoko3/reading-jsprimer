@@ -1,39 +1,36 @@
-console.log("index.js: loaded");
-
-const fetchUserInfo = (userId) => {
-  fetch(`https://api.github.com/users/${encodeURIComponent(userId)}`)
-    .then((res) => {
-      if (!res.ok) {
-        console.error("error response", res.status);
-      } else {
-        return res.json().then((userInfo) => {
-          const view = escapeHTML`
-          <h4>${userInfo.name} (@${userInfo.login})</h4>
-          <img src="${userInfo.avatar_url}" alt="${userInfo.login}" height="100">
-          <dl>
-              <dt>Location</dt>
-              <dd>${userInfo.location}</dd>
-              <dt>Repositories</dt>
-              <dd>${userInfo.public_repos}</dd>
-          </dl>
-          `;
-          const result = document.getElementById("result");
-          result.innerHTML = view;
-        });
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+const main = async () => {
+  try {
+    const userInfo = await fetchUserInfo("nekootoko3");
+    const view = createView(userInfo);
+    displayView(view);
+  } catch (err) {
+    console.error(err);
+  }
 };
 
-const escapeSpecialChars = (str) => {
-  return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+const fetchUserInfo = async (userId) => {
+  const res = await fetch(
+    `https://api.github.com/users/${encodeURIComponent(userId)}`
+  );
+
+  if (!res.ok) {
+    return Promise.reject(new Error(`${res.status}: ${res.statusText}`));
+  } else {
+    return res.json();
+  }
+};
+
+const createView = (userInfo) => {
+  return escapeHTML`
+    <h4>${userInfo.name} (@${userInfo.login})</h4>
+    <img src="${userInfo.avatar_url}" alt="${userInfo.login}" height="100">
+    <dl>
+        <dt>Location</dt>
+        <dd>${userInfo.location}</dd>
+        <dt>Repositories</dt>
+        <dd>${userInfo.public_repos}</dd>
+    </dl>
+    `;
 };
 
 const escapeHTML = (strings, ...values) => {
@@ -45,4 +42,18 @@ const escapeHTML = (strings, ...values) => {
       return result + String(value) + str;
     }
   });
+};
+
+const escapeSpecialChars = (str) => {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+};
+
+const displayView = (view) => {
+  const result = document.getElementById("result");
+  result.innerHTML = view;
 };
