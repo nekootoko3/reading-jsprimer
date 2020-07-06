@@ -1,1 +1,7 @@
-console.log("Hello world");
+const program = require("commander");
+
+program.parse(process.argv);
+
+const filePath = program.args[0];
+console.log(program.args);
+console.log(filePath);
