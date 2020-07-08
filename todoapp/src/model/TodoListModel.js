@@ -7,7 +7,7 @@ export class TodoListModel extends EventEmitter {
   }
 
   getTotalCount() {
-    return this.items.length();
+    return this.items.length;
   }
 
   getTodoItems() {
