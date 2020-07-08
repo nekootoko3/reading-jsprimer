@@ -1,5 +1,11 @@
 import { element } from "./html-util.js";
 
+/**
+ * @param {TodoItemModel} todoItem
+ * @param {function({id: string, completed: boolean})} onUpdateTodo
+ * @param {function({id: string})} onDeleteTodo
+ * @returns {Element}
+ */
 export class TodoItemView {
   createElement(todoItem, { onUpdateTodo, onDeleteTodo }) {
     const todoItemElement = todoItem.completed
